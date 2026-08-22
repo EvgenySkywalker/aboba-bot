@@ -4,10 +4,10 @@ from bot.utils.logger.logger import logger
 
 
 class PromptReader:
-    ANALYZE_CHECK_PROMPT_PATH = 'bot/utils/prompts/prompt.txt'
+    ANALYZE_RECEIPT_PROMPT_PATH = 'bot/utils/prompts/prompt.txt'
 
     def __init__(self):
-        self.check_analyze_prompt = self.get_prompt_from_file(self.ANALYZE_CHECK_PROMPT_PATH)
+        self.receipt_analyze_prompt = self.get_prompt_from_file(self.ANALYZE_RECEIPT_PROMPT_PATH)
 
     @staticmethod
     def get_prompt_from_file(path: str) -> str | None:

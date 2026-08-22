@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "aboba-bot"
 version = "0.1.0"
-description = "bot for trackong our spendings"
+description = "bot for tracking our spendings"
 authors = ["ianakievgenii@gmail.com"]
 package-mode = false
 

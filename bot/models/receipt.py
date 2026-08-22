@@ -1,8 +1,10 @@
 import datetime
 from typing import Literal, Annotated, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
+
+from bot.models.category import Category
 
 
 class CamelModel(BaseModel):
@@ -12,10 +14,10 @@ class CamelModel(BaseModel):
     )
 
 
-class ReceiptItem(CamelModel):
+class ReceiptItem(Category, CamelModel):
     name: str
     price_with_vat: int
-    category: str
+    price_with_vat_usd: float | None = None
     count: int
 
 
@@ -37,10 +39,10 @@ class NonReceipt(CamelModel):
     date: datetime.date | None = None
     items: list[ReceiptItem] = Field(default_factory=list)
     total_amount: int | None = None
-    currency: str
+    currency: str | None = None
     total_amount_usd: float | None = None
 
 
-CheckInfo = Annotated[
+Receipt = Annotated[
     Union[ValidReceipt, NonReceipt], Field(discriminator='is_readable')
 ]

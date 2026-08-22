@@ -11,7 +11,7 @@ class EventDebouncer[K, E]:
         self.buffers: dict[K, list[E]] = {}
         self.tasks: dict[K, asyncio.Task] = {}
 
-    async def add_event(self, key: K, event: E, callback: Callable[[K, list[E]], Awaitable[None]]):
+    async def add_event(self, key: K, event: E, callback: Callable[[list[E], K], Awaitable[None]]):
         if key not in self.buffers:
             self.buffers[key] = []
         self.buffers[key].append(event)
@@ -26,17 +26,18 @@ class EventDebouncer[K, E]:
                 self._wait_and_flush(key, callback)
             )
 
-    async def _flush(self, key: K, callback: Callable[[K, list[E]], Awaitable[None]]):
+    async def _flush(self, key: K, callback: Callable[[list[E], K], Awaitable[None]]):
         events = self.buffers.pop(key, [])
         self.tasks.pop(key, None)
         if events:
             if len(events) > self.max_size:
                 logger.warning(f"Too many events for key {key}: {len(events)}")
-            await callback(key, events[: self.max_size])
+            await callback(events[: self.max_size], key)
 
-    async def _wait_and_flush(self, key: K, callback: Callable[[K, list[E]], Awaitable[None]]):
+    async def _wait_and_flush(self, key: K, callback: Callable[[list[E], K], Awaitable[None]]):
         try:
             await asyncio.sleep(self.wait_seconds)
+            logger.debug(f"Flushing events for key {key} after waiting {self.wait_seconds} seconds")
             await self._flush(key, callback)
         except asyncio.CancelledError:
             pass
