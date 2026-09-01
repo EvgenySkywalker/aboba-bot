@@ -11,6 +11,7 @@ from bot.utils.currency_converter.currency_converter import CurrencyConverter
 from bot.models.receipt import Receipt, ValidReceipt
 from bot.models.money_provider import MoneyProvider as MoneyProviderModel
 from bot.utils.event_debouncer.event_debouncer import EventDebouncer
+from bot.utils.retry import retry_on_transient_errors
 
 ExpensesMessageDebouncer = EventDebouncer[MoneyProviderModel, Message]
 
@@ -54,7 +55,9 @@ class ExpensesHandler:
             receipt.total_amount_usd = round(receipt.total_amount * rate, 2)
             filtered_items.append((message, receipt))
 
-        self.worksheet.append_rows(rows, value_input_option=ValueInputOption.user_entered)
+        await retry_on_transient_errors(
+            lambda: self.worksheet.append_rows(rows, value_input_option=ValueInputOption.user_entered),
+        )
 
         return filtered_items
 
@@ -80,7 +83,9 @@ class ExpensesHandler:
                 spending.amount_usd,
             ])
 
-        self.worksheet.append_rows(rows, value_input_option=ValueInputOption.user_entered)
+        await retry_on_transient_errors(
+            lambda: self.worksheet.append_rows(rows, value_input_option=ValueInputOption.user_entered),
+        )
 
         return items
 
