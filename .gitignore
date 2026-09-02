@@ -1,4 +1,5 @@
-.idea/*
+.idea/**
 .env
 credentials/google-spreadsheet-key.json
 aboba.pem
+__pycache__/**
