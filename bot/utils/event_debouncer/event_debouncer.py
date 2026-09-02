@@ -30,9 +30,10 @@ class EventDebouncer[K, E]:
         events = self.buffers.pop(key, [])
         self.tasks.pop(key, None)
         if events:
+            await callback(events[:self.max_size], key)
             if len(events) > self.max_size:
                 logger.warning(f"Too many events for key {key}: {len(events)}")
-            await callback(events[: self.max_size], key)
+                await callback(events[self.max_size:], key)
 
     async def _wait_and_flush(self, key: K, callback: Callable[[list[E], K], Awaitable[None]]):
         try:
