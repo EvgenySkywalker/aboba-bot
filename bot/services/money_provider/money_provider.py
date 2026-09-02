@@ -57,4 +57,4 @@ class MoneyProvider:
         if (provider := self.user_id_provider_map.get(user_id)) is not None:
             return provider
 
-        raise ValueError('user_id: %d', user_id)
+        raise ValueError('user_id: %d' % user_id)
