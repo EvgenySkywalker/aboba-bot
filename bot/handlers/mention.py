@@ -101,6 +101,10 @@ class MentionHandler(BaseHandler):
             extracted_data['date'] = dt.date()
             break
 
+        for required in ('amount', 'recipient', 'category', 'description'):
+            if required not in extracted_data:
+                raise ValueError(f'Не хватает поля: {required}')
+
         extracted_data['category'] = extracted_data['category'].capitalize()
 
         return Spending(**extracted_data)
