@@ -1,12 +1,9 @@
-[tool.poetry]
+[project]
 name = "aboba-bot"
 version = "0.1.0"
 description = "bot for tracking our spendings"
 authors = ["ianakievgenii@gmail.com"]
 package-mode = false
-
-[project]
-name = "aboba-bot"
 requires-python = ">=3.14"
 dependencies = [
     "python-telegram-bot (>=22.8,<23.0)",
@@ -22,3 +19,8 @@ dependencies = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)"
+]
